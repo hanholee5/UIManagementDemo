@@ -19,7 +19,7 @@ namespace UIManagementDemo.Managers
         private Dictionary<string, SceneInstance> loadedSceneInstances = new Dictionary<string, SceneInstance>();
 
         // 열려있는 모든 UI
-        public UIStack stackedUIs;
+        private UIStack stackedUIs;
 
         // Canvas 정보는 LoadedUIs에서 참조 한다.
         protected AsyncOperationHandle<SceneInstance> sceneHandle;
@@ -52,13 +52,6 @@ namespace UIManagementDemo.Managers
 
             if (!IsUISceneLoadedAdditive(uiSceneName))
             {
-                //SceneManager.LoadScene(uiSceneName, LoadSceneMode.Additive);
-                //SceneManager.LoadSceneAsync(uiSceneName, LoadSceneMode.Additive).completed += (operation) =>
-                //{
-                //    Debug.Log("UIManager LoadUIScene - LoadComplete");7
-                //    inLoadCompleteAction?.Invoke();
-                //};
-
                 sceneHandle = Addressables.LoadSceneAsync(uiSceneName, LoadSceneMode.Additive, true);
                 sceneHandle.Completed += (handle) =>
                 {
@@ -162,24 +155,24 @@ namespace UIManagementDemo.Managers
         /// </summary>
         /// <param name="inUIScene">제어할 UISceneType</param>
         /// <param name="inVisible">출력, 숨김</param>
-        //public void OpenUIScene(UISceneType inUISceneType, bool inVisible)
-        //{
-        //    string uiSceneName = Utilities.ConvertUISceneTypeToUISceneName(inUISceneType);
-        //    if (string.IsNullOrEmpty(uiSceneName)) return;
+        public void OpenUIScene(UISceneType inUISceneType, bool inVisible)
+        {
+            string uiSceneName = Utilities.ConvertUISceneTypeToUISceneName(inUISceneType);
+            if (string.IsNullOrEmpty(uiSceneName)) return;
 
-        //    if (!IsUISceneLoadedAdditive(uiSceneName)) return;
+            if (!IsUISceneLoadedAdditive(uiSceneName)) return;
 
-        //    foreach(var uiBase in loadedUIs)
-        //    {
-        //        if(uiBase.Value.OwerSceneType == inUISceneType)
-        //        {
-        //            if (uiBase.Value.OwnerCanvas.IsCanvasEnabled() != inVisible)
-        //                uiBase.Value.OwnerCanvas.SetEnableCanvas(inVisible);
+            foreach (var uiBase in loadedUIs)
+            {
+                if (uiBase.Value.OwerSceneType == inUISceneType)
+                {
+                    if (uiBase.Value.OwnerCanvas.IsCanvasEnabled() != inVisible)
+                        uiBase.Value.OwnerCanvas.SetEnableCanvas(inVisible);
 
-        //            uiBase.Value.Open();
-        //        }
-        //    }
-        //}
+                    uiBase.Value.Open();
+                }
+            }
+        }
 
         public bool IsUISceneLoaded(UISceneType uiSceneType)
         {
